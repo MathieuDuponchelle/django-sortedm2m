@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_text
 from django.utils.html import conditional_escape, escape
 from django.utils.safestring import mark_safe
-
+import photologue.models
 
 if sys.version_info[0] < 3:
     iteritems = lambda d: iter(d.iteritems())
@@ -22,6 +22,17 @@ else:
 
 STATIC_URL = getattr(settings, 'STATIC_URL', settings.MEDIA_URL)
 
+def admin_thumbnail(photo):
+    func = getattr(photo, 'get_admin_thumbnail_url', None)
+    if hasattr(photo, 'get_absolute_url'):
+        return u'<a href="%s"><img src="%s"></a>' % \
+                (photo.get_absolute_url(), func())
+    else:
+        return u'<a href="%s"><img src="%s"></a>' % \
+                (photo.image.url, func())
+
+admin_thumbnail.short_description = "Thumbnail"
+admin_thumbnail.allow_tags = True
 
 class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     class Media:
@@ -41,6 +52,7 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
         attrs['class'] = ' '.join(classes)
         return attrs
 
+
     def render(self, name, value, attrs=None, choices=()):
         if value is None: value = []
         has_id = attrs and 'id' in attrs
@@ -53,6 +65,8 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
         unselected = []
 
         for i, (option_value, option_label) in enumerate(chain(self.choices, choices)):
+            photo = photologue.models.Photo.objects.get(title=option_label)
+            thumb = photo.get_admin_thumbnail_url()
             # If an ID attribute was given, add a numeric index as a suffix,
             # so that the checkboxes don't all have the same ID attribute.
             if has_id:
@@ -65,7 +79,9 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
             option_value = force_text(option_value)
             rendered_cb = cb.render(name, option_value)
             option_label = conditional_escape(force_text(option_label))
-            item = {'label_for': label_for, 'rendered_cb': rendered_cb, 'option_label': option_label, 'option_value': option_value}
+            item = {'label_for': label_for, 'rendered_cb': rendered_cb,
+                    'option_label': option_label, 'option_value': option_value,
+                    'thumb': thumb}
             if option_value in str_values:
                 selected.append(item)
             else:
