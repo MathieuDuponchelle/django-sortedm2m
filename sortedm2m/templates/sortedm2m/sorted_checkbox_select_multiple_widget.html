@@ -29,6 +29,24 @@
 		background: transparent;
 		border: 1px dashed blue;
 	}
+	
+	.selected_container {
+		border: 1px dashed #CCC;
+		position: relative;
+	}
+
+	.selected_container > div {
+		background: #AAA;
+		border: 1px solid #333;
+		position: absolute;
+		height: 100px;
+		width: 100px;
+	}
+
+	.selected_container > .ss-placeholder-child {
+		background: transparent;
+		border: 1px dashed blue;
+	}
 </style>
 
 <!-- Javascript -->
@@ -38,25 +56,38 @@
 				gutterX: -1, // Compensate for border width
 				gutterY: -1, // Compensate for border width
 				paddingX: 0,
-				paddingY: 0
+				paddingY: 0,
+		});
+		$(".selected_container").shapeshift({
+				gutterX: -1, // Compensate for border width
+				gutterY: -1, // Compensate for border width
+				paddingX: 0,
+				paddingY: 0,
+				colWidth: 182,
+				minHeight: 1500,
 		});
 	})
 </script>
 
-<div class="sortedm2m-container">
+<div class="sortedm2m-container" style="width: 100%">
 
 	<p class="selector-filter">
 		<img src="{% static "sortedm2m/selector-search.gif" %}" alt="" title="{% trans "Type into this box to filter down the list." %}" />
 		<input type="text" placeholder="{% trans "Filter" %}" />
 	</p>
 
-	<div>
-			<div class="container" style="width: 600px">
-				{% for row in unselected %}
-				<div style="width: 180px; height: {{ row.custom_height }}px; background-image: url({{ row.thumb }});">
-				</div>
-				{% endfor %}
+	<div style="width: 100%">
+		<div class="container" style="width: 600px; float: left;">
+			{% for row in unselected %}
+			<div style="width: 180px; height: {{ row.custom_height }}px; background-image: url({{ row.thumb }});">
 			</div>
+			{% endfor %}
+		</div>
+
+		<div class="selected_container" style="width: 600px; height: 1500px; float: left;">
+		</div>
+
+		<div class="clearfix"></div>
 
 		<p class="help">
 			{% trans "Choose items and order by drag & drop." %}
