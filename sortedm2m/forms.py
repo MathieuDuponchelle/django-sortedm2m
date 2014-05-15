@@ -66,7 +66,8 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
 
         for i, (option_value, option_label) in enumerate(chain(self.choices, choices)):
             photo = photologue.models.Photo.objects.get(title=option_label)
-            thumb = photo.get_admin_thumbnail_url()
+            thumb = photo.get_custom_admin_url()
+            custom_height = photo.get_height_for_custom_admin_width()
             # If an ID attribute was given, add a numeric index as a suffix,
             # so that the checkboxes don't all have the same ID attribute.
             if has_id:
@@ -81,7 +82,7 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
             option_label = conditional_escape(force_text(option_label))
             item = {'label_for': label_for, 'rendered_cb': rendered_cb,
                     'option_label': option_label, 'option_value': option_value,
-                    'thumb': thumb}
+                    'thumb': thumb, 'custom_height': custom_height}
             if option_value in str_values:
                 selected.append(item)
             else:
@@ -102,6 +103,8 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
 
     def value_from_datadict(self, data, files, name):
         value = data.get(name, None)
+        print "name is", name
+        print "value is", value
         if isinstance(value, string_types):
             return [v for v in value.split(',') if v]
         return value

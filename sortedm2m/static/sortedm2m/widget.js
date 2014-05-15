@@ -5,6 +5,7 @@ if (jQuery === undefined) {
 (function ($) {
     $(function () {
         $('.sortedm2m').parents('ul').each(function () {
+	    console.log ("sorted ul each");
             $(this).addClass('sortedm2m');
             var checkboxes = $(this).find('input[type=checkbox]');
             var id = checkboxes.first().attr('id').match(/^(.*)_\d+$/)[1];
@@ -30,6 +31,7 @@ if (jQuery === undefined) {
 
         $('.sortedm2m-container .selector-filter input').each(function () {
             $(this).bind('input', function() {
+		    console.log("sorted input bind");
                 var search = $(this).val().toLowerCase();
                 var $el = $(this).closest('.selector-filter');
                 var $container = $el.siblings('ul').each(function() {
