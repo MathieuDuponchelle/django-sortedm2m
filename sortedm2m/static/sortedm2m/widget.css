@@ -30,10 +30,11 @@ ul.sortedm2m {
 ul.sortedm2m li {
     list-style-type: none;
     text-align: left;
-    width: 550px;
+    width: 33%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: pre;
+    float: left;
 }
 
 ul.sortedm2m li, ul.sortedm2m label {
@@ -43,8 +44,10 @@ ul.sortedm2m li, ul.sortedm2m label {
 /* required to work properly in django admin */
 body.change-form .sortedm2m-container {
     float: left;
+    width: 100%;
 }
 .module ul.sortedm2m {
     margin: 0;
     padding: 6px 8px;
+    width: 100%;
 }
