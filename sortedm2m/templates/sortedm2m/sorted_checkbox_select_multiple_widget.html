@@ -19,7 +19,7 @@
 
 	.container > div {
 		background: #AAA;
-		border: 1px solid #333;
+		border: 0px solid #333;
 		position: absolute;
 		height: 100px;
 		width: 100px;
@@ -29,7 +29,7 @@
 		background: transparent;
 		border: 1px dashed blue;
 	}
-	
+
 	.selected_container {
 		border: 1px dashed #CCC;
 		position: relative;
@@ -37,7 +37,7 @@
 
 	.selected_container > div {
 		background: #AAA;
-		border: 1px solid #333;
+		border: 0px solid #333;
 		position: absolute;
 		height: 100px;
 		width: 100px;
@@ -57,40 +57,72 @@
 				gutterY: -1, // Compensate for border width
 				paddingX: 0,
 				paddingY: 0,
+				minHeight: 1000,
 		});
 		$(".selected_container").shapeshift({
-				gutterX: -1, // Compensate for border width
-				gutterY: -1, // Compensate for border width
+				gutterX: 5, // Compensate for border width
+				gutterY: 5, // Compensate for border width
 				paddingX: 0,
 				paddingY: 0,
 				colWidth: 182,
 				minHeight: 1500,
 		});
+		$(".container").before('<input type="hidden" id="42" name="photos" />');
+		$(".container").addClass('sortedm2m');
+		$("#42").val("157");
+
+		var recalculate_value = function () {
+			var children = $(".selected_container").find(".ss-active-child");
+			var values = [];
+			children.each(function() {
+				var val = $(this).attr("for").match(/[0-9]+/)[0];
+				console.log("one child weon " + val);
+				values.push(val);
+			});
+			$("#42").val(values.join(','));
+		}
+
+		recalculate_value();
+
+		$(".selected_container").bind("ss-added", function() {
+			recalculate_value();
+		});
+		$(".selected_container").bind("ss-removed", function() {
+			recalculate_value();
+		});
+		$(".selected_container").bind("ss-rearranged", function() {
+			recalculate_value();
+		});
 	})
 </script>
 
-<div class="sortedm2m-container" style="width: 100%">
-
-	<p class="selector-filter">
-		<img src="{% static "sortedm2m/selector-search.gif" %}" alt="" title="{% trans "Type into this box to filter down the list." %}" />
-		<input type="text" placeholder="{% trans "Filter" %}" />
-	</p>
-
-	<div style="width: 100%">
-		<div class="container" style="width: 600px; float: left;">
+<div style="width: 100%">
+	<div style="float: left; width: 600px; text-align: center">
+		<p>
+			Les photos dans cette partie ne sont pas sélectionnées, il faut les drag and drop a droite.
+			WISIWYG baby
+		</p>
+		<div class="container" style="width: 600px; height:500px">
 			{% for row in unselected %}
-			<div style="width: 180px; height: {{ row.custom_height }}px; background-image: url({{ row.thumb }});">
+			<div {{ row.label_for|safe }} style="width: 180px; height: {{ row.custom_height }}px; background-image: url({{ row.thumb }});">
 			</div>
 			{% endfor %}
 		</div>
-
-		<div class="selected_container" style="width: 600px; height: 1500px; float: left;">
-		</div>
-
-		<div class="clearfix"></div>
-
-		<p class="help">
-			{% trans "Choose items and order by drag & drop." %}
-		</p>
 	</div>
+
+	<div style="float: left; width: 600px; text-align: center">
+		<p>
+			Les photos dans cette partie feront partie de l'album, tu peux les drag and drop pour les réordonner.
+			Sois heureux bordel.
+		</p>
+		<div class="selected_container" style="width: 600px; height: 1500px;">
+			{% for row in selected %}
+			<div {{ row.label_for|safe }} style="width: 180px; height: {{ row.custom_height }}px; background-image: url({{ row.thumb }});">
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+</div>
 </div>

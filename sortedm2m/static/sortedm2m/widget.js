@@ -2,8 +2,11 @@ if (jQuery === undefined) {
     jQuery = django.jQuery;
 }
 
+
+
 (function ($) {
     $(function () {
+	
         $('.sortedm2m').parents('ul').each(function () {
 	    console.log ("sorted ul each");
             $(this).addClass('sortedm2m');
@@ -28,6 +31,7 @@ if (jQuery === undefined) {
                 update: recalculate_value
             });
         });
+
 
         $('.sortedm2m-container .selector-filter input').each(function () {
             $(this).bind('input', function() {

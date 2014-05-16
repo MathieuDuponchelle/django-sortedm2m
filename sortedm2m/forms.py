@@ -72,7 +72,7 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
             # so that the checkboxes don't all have the same ID attribute.
             if has_id:
                 final_attrs = dict(final_attrs, id='%s_%s' % (attrs['id'], i))
-                label_for = ' for="%s"' % conditional_escape(final_attrs['id'])
+                label_for = ' for="%s"' % str(photo.id)
             else:
                 label_for = ''
 
@@ -96,6 +96,8 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
                     ordered.append(select)
         selected = ordered
 
+        print len(selected)
+        print len(unselected)
         html = render_to_string(
             'sortedm2m/sorted_checkbox_select_multiple_widget.html',
             {'selected': selected, 'unselected': unselected})
@@ -106,6 +108,7 @@ class SortedCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
         print "name is", name
         print "value is", value
         if isinstance(value, string_types):
+            print [v for v in value.split(',') if v]
             return [v for v in value.split(',') if v]
         return value
 
